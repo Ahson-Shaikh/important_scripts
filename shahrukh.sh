@@ -1,11 +1,8 @@
 #!/bin/bash
 DATE=$(date +%d-%m)
 PAST_DAY=`/bin/date -d '7 days ago' +%d-%m`
-CONTAINER_NAME='mongo'
-BACKUP_DIR=/home/shahrukh/Documents/dumps
-#read -p "Enter container id to create backup: " id
-docker exec $CONTAINER_NAME mongodump --db wagmi --out /backups/wagmi-stag-$DATE-dump
-docker cp $CONTAINER_NAME:/backups/wagmi-stag-$DATE-dump  $BACKUP_DIR
-cd $BACKUP_DIR && tar czfv wagmi-stag-$DATE-dump.tar.gz ./wagmi-stag-$DATE-dump/wagmi
-#rm -rf ./dumps
-rm wagmi-stag-$PAST_DAY-dump.tar.gz
+CONTAINER_NAME='wagmi-mobile-dev-mongo'
+BACKUP_DIR=/home/ubuntu/dumps
+cd $BACKUP_DIR
+docker exec -i $CONTAINER_NAME sh -c 'mongodump --archive --db=wagmi' > $BACKUP_DIR/wagmi-stag-$DATE-dump && gzip wagmi-stag-$DATE-dump && rm wagmi-stag-$DATE-dump
+rm wagmi-stag-$DATE-dump wagmi-stag-$PAST_DAY-dump.gz
